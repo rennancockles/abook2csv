@@ -1,0 +1,20 @@
+#! /bin/bash
+
+# Script para converter .abook para .csv
+# Criado por Rennan Cockles
+
+if [[ $1 =~ .*\.abook ]]; then
+  filename="$(sed -r 's/(\.*)\.abook/\1/' < <(basename $1))"
+  name="$HOME/$filename.csv"
+else
+  echo "arquivo .abook nao encontrado."
+  exit 1
+fi
+
+echo "Display Name","First Name","Last Name","E-mail Address" >$name
+tr '|' ',' <$1 | tr -d '\t' | tr -d ' ' | cut -d',' -f1-4 >>$name
+
+echo "Arquivo $name criado"
+echo $(wc -l $1 | awk {'print $1 " contatos em"'}) $filename.abook
+echo $(wc -l $name | awk {'print $1-1 " contatos recuperados"'})
+
